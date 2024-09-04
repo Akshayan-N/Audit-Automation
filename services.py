@@ -29,7 +29,19 @@ def time_sync():
     if not is_package_installed("ntp"):
         install_package("ntp")
 
-    
+def remove_services(services):
+    for service in services:
+        output = subprocess.run(
+            "dpkg-query -W -f='${binary:Package}\t${Status}\t${db:Status-Status}\n' " + service,
+            capture_output=True,
+            text=True,
+            shell=True
+        ).stdout.split()
+        
+        if "installed" in output:
+            subprocess.run(
+                ""
+            )
     
 def main():
     os = detect_os()
@@ -42,5 +54,11 @@ def main():
         print("OS not supported")
         exit()
     
-    time_sync()
-main()
+    # time_sync()
+
+    unwanted_services = ["apache2", "nfs-kernel-server"]
+    remove_services(unwanted_services)
+
+
+if __name__ == "__main__":
+    main()
